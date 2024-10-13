@@ -1,0 +1,153 @@
+﻿@model X.PagedList.IPagedList<FinancialApp.Models.Transaction>
+@using X.PagedList
+
+@{
+    ViewData["Title"] = "Transactions";
+    var incomeData = ViewBag.IncomeData as IEnumerable<dynamic>;
+    var expenseData = ViewBag.ExpenseData as IEnumerable<dynamic>;
+}
+<style>
+    body{
+        background-color: #eff6ed;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Transactions</h2>
+    <a asp-action="Create" class="btn btn-primary">Create New Transaction</a>
+</div>
+
+<div>
+    <table class="table" style="border: 2px solid #a5b89c; border-radius: 8px; overflow: visible">
+        <thead>
+        <tr style="background-color: #d4e7ce;">
+            <th>Icon</th>
+            <th>
+                @Html.ActionLink("Category", "Index", new { sortOrder = ViewBag.CategorySortParm })
+            </th>
+            <th>Amount</th>
+            <th>
+                @Html.ActionLink("Type", "Index", new { sortOrder = ViewBag.TypeSortParm })
+            </th>
+            <th>Currency</th>
+            <th>
+                @Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DateSortParm })
+            </th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr style="background-color: #eff6ed;">
+                <td>@item.Icon</td>
+                <td style="width: 120px;">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" style="width: 100%;">@item.Category</a>
+                </td>
+                <td>@item.Amount</td>
+                <td>@item.Type</td>
+                <td>@item.Currency</td>
+                <td>@item.Date</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<a asp-action="Index" asp-controller="Account" class="btn btn-primary">Back</a>
+
+<!-- Pie Charts -->
+<div class="container mt-5">
+    <h3 class="text-center">Income and Expense Pie Charts</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Income Pie Chart</h4>
+            <canvas id="incomePieChart" width="300" height="300"></canvas>
+        </div>
+        <div class="col-md-6">
+            <h4>Expense Pie Chart</h4>
+            <canvas id="expensePieChart" width="300" height="300"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Prepare data for Income Pie Chart
+    var incomeData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.IncomeData));
+    var incomeLabels = incomeData.map(item => item.Icon);
+    var incomeValues = incomeData.map(item => item.TotalAmount);
+
+    // Prepare data for Expense Pie Chart
+    var expenseData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.ExpenseData));
+    var expenseLabels = expenseData.map(item => item.Icon);
+    var expenseValues = expenseData.map(item => item.TotalAmount);
+
+    // Income Pie Chart
+    var ctxIncome = document.getElementById('incomePieChart').getContext('2d');
+    new Chart(ctxIncome, {
+        type: 'pie',
+        data: {
+            labels: incomeLabels,
+            datasets: [{
+                label: 'Income',
+                data: incomeValues,
+                backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#ff9f40', '#4bc0c0', '#f7464a', '#46bfbd'],
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return tooltipItem.label + ': $' + tooltipItem.raw.toFixed(2);
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Expense Pie Chart
+    var ctxExpense = document.getElementById('expensePieChart').getContext('2d');
+    new Chart(ctxExpense, {
+        type: 'pie',
+        data: {
+            labels: expenseLabels,
+            datasets: [{
+                label: 'Expenses',
+                data: expenseValues,
+                backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#ff9f40', '#4bc0c0', '#f7464a', '#46bfbd'],
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return tooltipItem.label + ': $' + tooltipItem.raw.toFixed(2);
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>

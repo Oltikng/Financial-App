@@ -1,0 +1,199 @@
+﻿@model FinancialApp.Controllers.AccountController.InputModel
+
+@{
+    ViewData["Title"] = "Create Wallet";
+}
+
+<style>
+    body {
+        background-color: #eff6ed;
+    }
+
+    .form-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #d4e7ce; 
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transform: translateY(-50px);
+        transition: opacity 1s ease-out, transform 1s ease-out;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 24px;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        width: 100%;
+        border-radius: 5px;
+        padding: 8px;
+        font-size: 14px;
+        background-color: #eff6ed;
+        border: 1px solid #ccc;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-control.is-invalid {
+            border-color: red;
+        }
+
+        .form-control.is-valid {
+            border-color: green;
+        }
+
+    .btn {
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-size: 14px;
+        display: block;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .btn-primary:hover {
+        background-color: #28a745;
+    }
+
+    .btn-secondary:hover {
+        background-color: #6c757d;
+    }
+
+    .text-danger {
+        color: red;
+        font-size: 12px;
+    }
+
+    .control-label {
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    /* Class to trigger the transition */
+    .slide-down {
+        opacity: 1;
+        transform: translateY(0); 
+    }
+</style>
+
+<div class="form-container" id="formContainer">
+    <h1>Create Wallet</h1>
+
+    <form asp-action="Create" method="post" id="createAccountForm">
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" placeholder="Enter wallet name" id="accountNameInput" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Category" class="control-label"></label>
+            <select asp-for="Category" class="form-control" id="categorySelect">
+                <option value="">Select a category</option>
+                <option value="Bank">Bank</option>
+                <option value="Cash">Cash</option>
+                <option value="Crypto">Crypto</option>
+                <option value="Investment">Investment</option>
+                <option value="Card">Card</option>
+            </select>
+            <span asp-validation-for="Category" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Icon" class="control-label">Select Icon</label>
+            <select asp-for="Icon" class="form-control" id="iconSelect">
+                <option value="🏦">Bank 🏦</option>
+                <option value="💸">Cash 💸</option>
+                <option value="📈">Investment 📈</option>
+                <option value="💳">Card 💳</option>
+            </select>
+            <span asp-validation-for="Icon" class="text-danger"></span>
+        </div>
+        <br />
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Create Account</button>
+            <a asp-action="Index" asp-controller="Account" class="btn btn-secondary">Back</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            var formContainer = document.getElementById('formContainer');
+            setTimeout(function () {
+                formContainer.classList.add('slide-down');
+            }, 100); 
+
+            var categorySelect = document.getElementById('categorySelect');
+            var iconSelect = document.getElementById('iconSelect');
+
+            // Real-time validation for account name input
+            var accountNameInput = document.getElementById('accountNameInput');
+            accountNameInput.addEventListener('input', function () {
+                var validationMessage = document.querySelector('span[asp-validation-for="Name"]');
+                if (accountNameInput.value.length < 3) {
+                    validationMessage.textContent = "Name must be at least 3 characters long.";
+                    accountNameInput.classList.add('is-invalid');
+                } else {
+                    validationMessage.textContent = "";
+                    accountNameInput.classList.remove('is-invalid');
+                    accountNameInput.classList.add('is-valid');
+                }
+            });
+
+           
+            categorySelect.addEventListener('change', function () {
+                var selectedCategory = categorySelect.value;
+                iconSelect.innerHTML = ''; 
+
+                if (selectedCategory === 'Bank') {
+                    iconSelect.innerHTML = `
+                                        <option value="🏦">Bank 🏦</option>                                    
+                                    `;
+                } else if (selectedCategory === 'Cash') {
+                    iconSelect.innerHTML = `
+                                        <option value="💸">Cash 💸</option>
+                                        <option value="💶">Euro 💶</option>
+                                    `;
+                } else if (selectedCategory === 'Crypto') {
+                    iconSelect.innerHTML = `
+                                        <option value=" 🪙">Bitcoin 🪙</option>
+                                        <option value="📉">Other 📉</option>
+                                    `;
+                } else if (selectedCategory === 'Investment') {
+                    iconSelect.innerHTML = `
+                                        <option value="📈">Investment 📈</option>
+                                        <option value="💹">Stocks 💹</option>
+                                    `;
+                } else if (selectedCategory === 'Card') {
+                    iconSelect.innerHTML = `
+                                        <option value="💳">Card 💳</option>
+                                        <option value="🏧">ATM 🏧</option>
+                                    `;
+                } else {
+                    iconSelect.innerHTML = `
+                                        <option value="">Select a category first</option>
+                                    `;
+                }
+            });
+
+            // Form validation on submit
+            var createAccountForm = document.getElementById('createAccountForm');
+            createAccountForm.addEventListener('submit', function (event) {
+                if (!accountNameInput.value || categorySelect.value === '' || iconSelect.value === '') {
+                    alert('Please fill in all fields.');
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+}

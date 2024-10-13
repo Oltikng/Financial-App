@@ -1,0 +1,71 @@
+﻿@model FinancialApp.Controllers.TransactionsController.InputModel
+
+@{
+    ViewData["Title"] = "Edit Transaction";
+}
+
+<h2>Edit Transaction</h2>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="Category" class="control-label"></label>
+        <select asp-for="Category" class="form-control">
+            <option value="Booking">Booking</option>
+            <option value="Food">Food</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Taxes">Taxes</option>
+            <option value="Salary">Salary</option>
+            <option value="Investment">Investment</option>
+            <option value="Rent">Rent</option>
+            <option value="Debt">Debt</option>
+            <option value="Transport">Transport</option>
+            <option value="Groceries">Groceries</option>
+            <option value="Other">Other</option>
+        </select>
+        <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Amount"></label>
+        <input asp-for="Amount" class="form-control" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AccountId"></label>
+        <select asp-for="AccountId" class="form-control" asp-items="ViewBag.AccountId"></select>
+        <span asp-validation-for="AccountId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Type"></label>
+        <select asp-for="Type" class="form-control">
+            <option value="Income">Income</option>
+            <option value="Expense">Expense</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Currency"></label>
+        <select asp-for="Currency" class="form-control">
+            <option value="EUR">EUR</option>
+        </select>
+        <span asp-validation-for="Currency" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Icon"></label>
+        <select asp-for="Icon" class="form-control">
+            @foreach (var icon in (Dictionary<string, string>)ViewBag.IconList)
+            {
+                <option value="@icon.Key">@icon.Value</option>
+            }
+        </select>
+        <span asp-validation-for="Icon" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

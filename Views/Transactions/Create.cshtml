@@ -1,0 +1,257 @@
+﻿@model FinancialApp.Controllers.TransactionsController.InputModel
+
+@{
+    ViewData["Title"] = "Create Transaction";
+}
+
+<style>
+    body {
+        background-color: #eff6ed;
+    }
+
+    .form-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #d4e7ce;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transform: translateY(-50px);
+        transition: opacity 1s ease-out, transform 1s ease-out;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 24px;
+        color: #333;
+    }
+
+    .form-floating label {
+        font-size: 14px;
+        color: #333;
+    }
+
+    .form-select, .form-control {
+        border-radius: 5px;
+        background-color: #eff6ed;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-control.is-invalid {
+            border-color: red;
+        }
+
+        .form-control.is-valid {
+            border-color: green;
+        }
+
+    .btn {
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-size: 14px;
+        display: block;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .btn-primary:hover {
+        background-color: #28a745;
+    }
+
+    .text-danger {
+        color: red;
+        font-size: 12px;
+    }
+
+    .slide-down {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+
+<div class="form-container" id="formContainer">
+    <h1>Create Transaction</h1>
+
+    <form asp-action="Create" method="post" id="createTransactionForm">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <select asp-for="Category" class="form-select" id="categorySelect" aria-label="Category">
+                        <option value="">Select Category</option>
+                        <option value="Booking">Booking</option>
+                        <option value="Food">Food</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Taxes">Taxes</option>
+                        <option value="Salary">Salary</option>
+                        <option value="Investment">Investment</option>
+                        <option value="Rent">Rent</option>
+                        <option value="Debt">Debt</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Groceries">Groceries</option>
+                        <option value="Online Shopping">Online Shopping</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <label asp-for="Category">Category</label>
+                    <span asp-validation-for="Category" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <select asp-for="Icon" class="form-control" id="iconSelect">
+                        <option value="">Select an icon</option>
+                    </select>
+                    <span asp-validation-for="Icon" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <select asp-for="AccountId" class="form-select" aria-label="Account">
+                        <option value="">Select Account</option>
+                        @foreach (var account in ViewBag.AccountId as SelectList)
+                        {
+                            <option value="@account.Value">@account.Text</option>
+                        }
+                    </select>
+                    <label asp-for="AccountId">Account</label>
+                    <span asp-validation-for="AccountId" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <input asp-for="Amount" class="form-control" placeholder="Amount" />
+                    <label asp-for="Amount">Amount</label>
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <select asp-for="Currency" class="form-select" aria-label="Currency">
+                        <option value="">Select Currency</option>
+                        <option value="EUR">EUR</option>
+                    </select>
+                    <label asp-for="Currency">Currency</label>
+                    <span asp-validation-for="Currency" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <select asp-for="Type" class="form-select" aria-label="Type">
+                        <option value="">Select Type</option>
+                        <option value="Income">Income</option>
+                        <option value="Expense">Expense</option>
+                    </select>
+                    <label asp-for="Type">Type</label>
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Create</button>
+            <a asp-action="Index" asp-controller="Transactions" class="btn btn-secondary">Back</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var formContainer = document.getElementById('formContainer');
+            setTimeout(function () {
+                formContainer.classList.add('slide-down');
+            }, 100);
+
+            // Variables to hold category and icon selects
+            var categorySelect = document.getElementById('categorySelect');
+            var iconSelect = document.getElementById('iconSelect');
+
+            // Function to update icons based on selected category
+            categorySelect.addEventListener('change', function () {
+                var selectedCategory = categorySelect.value;
+                iconSelect.innerHTML = '';
+
+                if (selectedCategory === 'Booking') {
+                    iconSelect.innerHTML = `
+                                    <option value="🏨">Hotel 🏨</option>
+                                    <option value="✈️">Flight ✈️</option>
+                                `;
+                } else if (selectedCategory === 'Food') {
+                    iconSelect.innerHTML = `
+                                    <option value="🍔">Burger Place🍔</option>
+                                    <option value="🍕">Pizza Place 🍕</option>
+                                    <option value="🍟">KFC 🍟</option>
+                                    <option value="🍲">Restaurant 🍲</option>
+                                    <option value="🍜">Asian Food 🍜</option>
+                                `;
+                } else if (selectedCategory === 'Entertainment') {
+                    iconSelect.innerHTML = `
+                                    <option value="🎬">Movie 🎬</option>
+                                    <option value="🎮">Games 🎮</option>
+                                    <option value="🎉">Party 🎉</option>
+                                    <option value="🎡">Theme Park 🎡</option>
+                                    <option value="🎭">Theatre 🎭</option>
+                                    <option value="🎪">Circus 🎪</option>
+                                `;
+                } else if (selectedCategory === 'Taxes') {
+                    iconSelect.innerHTML = `
+                                    <option value="📑">Local Taxes 📑</option>
+                                    <option value="📜">Insurance 📜</option>
+                                `;
+                } else if (selectedCategory === 'Salary') {
+                    iconSelect.innerHTML = `
+                                    <option value="💼">Work 💼</option>
+                                    <option value="💰">Rent 💰</option>
+                                `;
+                } else if (selectedCategory === 'Investment') {
+                    iconSelect.innerHTML = `
+                                    <option value="📈">Growth 📈</option>
+                                    <option value="💹">Stocks 💹</option>
+                                    <option value="📉">Loses 📉</option>
+                                `;
+                } else if (selectedCategory === 'Rent') {
+                    iconSelect.innerHTML = `
+                                    <option value="🏠">Home 🏠</option>
+                                    <option value="🔑">Car 🔑</option>
+                                `;
+                } else if (selectedCategory === 'Debt') {
+                    iconSelect.innerHTML = `
+                                    <option value="📝">Loan 📝</option>
+                                    <option value="🆘">Debt 🆘</option>
+                                `;
+                } else if (selectedCategory === 'Transport') {
+                    iconSelect.innerHTML = `
+                                    <option value="🚗">Car 🚗</option>
+                                    <option value="🚌">Bus 🚌</option>
+                                    <option value="🚕">Taxi 🚕</option>
+                                `;
+                } else if (selectedCategory === 'Groceries') {
+                    iconSelect.innerHTML = `
+                                    <option value="🛒">Shopping Cart 🛒</option>
+                                    <option value="🍏">Fruits 🍏</option>
+                                `;
+                } else if (selectedCategory === 'Online Shopping') {
+                    iconSelect.innerHTML = `
+                                    <option value="💻">Laptop 💻</option>
+                                    <option value="📦">Package 📦</option>
+                                `;
+                } else if (selectedCategory === 'Shopping') {
+                    iconSelect.innerHTML = `
+                                    <option value="🛍️">Bags 🛍️</option>
+                                    <option value="👗">Clothes 👗</option>
+                                `;
+                } else {
+                    iconSelect.innerHTML = `<option value="">Select an icon</option>`;
+                }
+            });
+        });
+    </script>
+}

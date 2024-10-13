@@ -1,0 +1,196 @@
+﻿@using FinancialApp.Areas.Identity.Data
+@model IEnumerable<FinancialApp.Models.Account>
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<style>
+    body {
+        background-color: #eff6ed;
+    }
+
+    .greeting-container {
+        text-align: center;
+        padding: 40px;
+        background-color: #f0f7f5;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 20px auto;
+        max-width: 800px;
+    }
+
+        .greeting-container h2 {
+            font-size: 24px;
+            color: #333;
+            margin: 0;
+        }
+
+        .greeting-container p {
+            font-size: 18px;
+            color: #555;
+            margin: 10px 0 0;
+        }
+
+    .highlight {
+        color: #28a745;
+        font-weight: bold;
+    }
+
+    .call-to-action {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #333;
+    }
+
+    .financial-overview {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 20px;
+        background-color: #f0f7f5;
+        border-radius: 12px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+
+    .financial-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        width: 250px;
+        text-align: center;
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .financial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0px 8px 18px rgba(0, 0, 0, 0.15);
+        }
+
+    .financial-card-icon {
+        font-size: 40px;
+        margin-bottom: 10px;
+        color: #6c757d;
+    }
+
+    .financial-card-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .financial-card-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #28a745;
+    }
+
+        .financial-card-value.expense {
+            color: #dc3545;
+        }
+
+        .financial-card-value.balance {
+            color: #ffc107;
+        }
+</style>
+
+<div class="greeting-container">
+    <h2>Hello <span class="highlight">@ViewData["FirstName"]</span>!</h2>
+    <p class="call-to-action">Take a look into your finances and see how you’re doing this month.</p>
+</div>
+
+<div class="financial-overview">
+    <center><button id="openChartBtn" class="btn btn-success">View Monthly Chart</button></center>
+    <div class="financial-card">
+        <div class="financial-card-icon">📈</div>
+        <div class="financial-card-title">Total Incomes</div>
+        <div class="financial-card-value">@ViewData["TotalIncomes"] EUR</div>
+    </div>
+
+    <div class="financial-card">
+        <div class="financial-card-icon">📉</div>
+        <div class="financial-card-title">Total Expenses</div>
+        <div class="financial-card-value expense">@ViewData["TotalExpenses"] EUR</div>
+    </div>
+
+    <div class="financial-card">
+        <div class="financial-card-icon">📊</div>
+        <div class="financial-card-title">Total Balance</div>
+        <div class="financial-card-value balance">@ViewData["TotalBalance"] EUR</div>
+    </div>
+</div>
+
+<div id="chartModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);">
+    <div style="position:relative; margin:5% auto; padding:30px; background-color:white; width:90%; max-width:800px; border-radius:8px;">
+        <span id="closeModalBtn" style="position:absolute; top:10px; right:20px; font-size:30px; cursor:pointer;">&times;</span>
+        <h2>Monthly Income and Expenses</h2>
+        <canvas id="incomeExpensesChart" width="600" height="300"></canvas>
+    </div>
+</div>
+
+<div class="wallet-container" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+    @foreach (var account in Model)
+    {
+        <div class="wallet-card" style="background-color: #d4e7ce; border-radius: 10px; width: 250px; padding: 20px; text-align: center; box-shadow: 0px 4px 8px rgba(0,0,0,0.1);">
+            <h3 style="color: #333;">@account.Name</h3>
+            <p style="color: #555;"><strong>Category:</strong> @account.Category</p>
+            <p>
+                <a asp-action="Index" asp-controller="Account" class="btn btn-success">More Details</a>
+            </p>
+        </div>
+    }
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Chart initialization
+    var ctx = document.getElementById('incomeExpensesChart').getContext('2d');
+    var incomeExpensesChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Incomes', 'Expenses'],
+            datasets: [{
+                label: 'Total Amount',
+                data: [@ViewData["TotalIncomes"], @ViewData["TotalExpenses"]],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(255, 99, 132, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Modal functionality
+    var modal = document.getElementById("chartModal");
+    var openBtn = document.getElementById("openChartBtn");
+    var closeBtn = document.getElementById("closeModalBtn");
+
+    openBtn.onclick = function () {
+        modal.style.display = "block";
+    }
+
+    closeBtn.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>

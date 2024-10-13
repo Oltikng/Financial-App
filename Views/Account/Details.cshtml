@@ -1,0 +1,27 @@
+﻿@model FinancialApp.Models.Transaction
+
+<h1>Transaction Details</h1>
+
+<div>
+    <h3>Transaction</h3>
+    <div>
+        <dl class="row">
+            <dt class="col-sm-2">Description</dt>
+            <dd class="col-sm-10">@Model.Category</dd>
+
+            <dt class="col-sm-2">Amount</dt>
+            <dd class="col-sm-10">@Model.Amount.ToString("C")</dd>
+
+            <dt class="col-sm-2">Date</dt>
+            <dd class="col-sm-10">@Model.Date.ToShortDateString()</dd>
+
+            <dt class="col-sm-2">Account</dt>
+            <dd class="col-sm-10">@Model.Account?.Name</dd>
+        </dl>
+    </div>
+</div>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</p>
