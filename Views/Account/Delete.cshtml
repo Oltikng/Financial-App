@@ -1,31 +1,95 @@
 ﻿@model FinancialApp.Models.Account
 
-<h2>Delete Account</h2>
+@{
+    ViewData["Title"] = "Delete Wallet";
+}
 
-<div>
-    <h3>Account Details</h3>
-    <div>
-        <h4>Account</h4>
-        <hr />
+<style>
+    body {
+        background-color: #eff6ed;
+    }
+
+    .form-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #d4e7ce;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transform: translateY(-50px);
+        transition: opacity 1s ease-out, transform 1s ease-out;
+    }
+
+    h1, h3 {
+        text-align: center;
+        font-size: 24px;
+        color: #333;
+    }
+
+    .details-container {
+        margin-bottom: 20px;
+    }
+
+        .details-container dt {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .details-container dd {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+    .btn {
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-size: 14px;
+        display: block;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .btn-danger:hover {
+        background-color: #dc3545;
+    }
+
+    .btn-secondary:hover {
+        background-color: #6c757d;
+    }
+
+    .slide-down {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+
+<div class="form-container" id="formContainer">
+    <h3>Wallet Details</h3>
+    <br/>
+    <div class="details-container">
         <dl class="row">
-            <dt class="col-sm-2">
-                Name
-            </dt>
-            <dd class="col-sm-10">
-                @Model.Name
-            </dd>
-            <dt class="col-sm-2">
-                Category
-            </dt>
-            <dd class="col-sm-10">
-                @Model.Category
-            </dd>
+            <dt class="col-sm-4">Name</dt>
+            <dd class="col-sm-8">@Model.Name</dd>
+            <dt class="col-sm-4">Category</dt>
+            <dd class="col-sm-8">@Model.Category</dd>
         </dl>
-        <!-- Form to delete the account -->
-        <form asp-action="DeleteConfirmed" method="post">
-            <input type="hidden" asp-for="Id" />
-            <button type="submit" class="btn btn-danger">Delete</button>
-            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-        </form>
     </div>
+
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Delete Account</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var formContainer = document.getElementById('formContainer');
+            setTimeout(function () {
+                formContainer.classList.add('slide-down');
+            }, 100); // Apply slide-down animation
+        });
+    </script>
+}

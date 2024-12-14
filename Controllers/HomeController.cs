@@ -30,6 +30,10 @@ namespace FinancialApp.Controllers
             var userId = _userManager.GetUserId(User);
             var user = await _userManager.FindByIdAsync(userId);
 
+            // Get user settings
+            var settings = await _context.Settings.FirstOrDefaultAsync(s => s.UserId == userId);
+            var defaultCurrency = settings?.DefaultCurrency ?? "EUR";
+
             // Retrieve all accounts for the current user
             var accounts = await _context.Accounts
                 .Where(a => a.UserId == userId)

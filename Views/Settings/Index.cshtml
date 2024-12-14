@@ -1,0 +1,25 @@
+﻿@model FinancialApp.Models.Settings
+
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<h1>Settings</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<form asp-action="SaveSettings" method="post">
+    <label for="defaultCurrency">Default Currency:</label>
+    <select id="defaultCurrency" name="defaultCurrency">
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="GBP">GBP</option>
+        <option value="ALL">ALL</option>
+    </select>
+    <button type="submit">Save</button>
+</form>

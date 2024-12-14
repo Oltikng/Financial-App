@@ -297,3 +297,17 @@ C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\Mic
 C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\X.PagedList.dll
 C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\X.PagedList.Mvc.dll
 C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\X.PagedList.Web.Common.dll
+C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\obj\Debug\net8.0\FinancialApp.sourcelink.json
+C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\Microsoft.Extensions.Configuration.dll
+C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.dll
+C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\Microsoft.Extensions.Http.dll
+C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll
+C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
+C:\Users\Admin\Desktop\New folder\FinancialApp\FinancialApp\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll

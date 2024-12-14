@@ -56,9 +56,6 @@ namespace FinancialApp.Models
             public CurrencyType Currency { get; set; }
             public string Icon { get; set; }
         public Account Account { get; set; }
-        }
-        public enum CurrencyType
-        {
-            EUR
-        }
+    }
+   
 }

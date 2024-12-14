@@ -15,6 +15,7 @@ namespace FinancialApp.Areas.Identity.Data
         public string? LastName { get; set; }
         public string? Phone { get; set; }
         public virtual ICollection<Account> Accounts { get; set; }
+        public CurrencyType PreferredCurrency { get; set; } = CurrencyType.EUR;
 
         public FinancialUser()
         {
