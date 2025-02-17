@@ -5,10 +5,20 @@
     ViewData["Title"] = "Transactions";
     var incomeData = ViewBag.IncomeData as IEnumerable<dynamic>;
     var expenseData = ViewBag.ExpenseData as IEnumerable<dynamic>;
+    var userCurrency = ViewBag.UserCurrency;
 }
+
 <style>
-    body{
+    body {
         background-color: #eff6ed;
+    }
+
+    .income-amount {
+        color: green;
+    }
+
+    .expense-amount {
+        color: red;
     }
 </style>
 
@@ -20,40 +30,36 @@
 <div>
     <table class="table" style="border: 2px solid #a5b89c; border-radius: 8px; overflow: visible">
         <thead>
-        <tr style="background-color: #d4e7ce;">
-            <th>Icon</th>
-            <th>
-                @Html.ActionLink("Category", "Index", new { sortOrder = ViewBag.CategorySortParm })
-            </th>
-            <th>Amount</th>
-            <th>
-                @Html.ActionLink("Type", "Index", new { sortOrder = ViewBag.TypeSortParm })
-            </th>
-            <th>Currency</th>
-            <th>
-                @Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DateSortParm })
-            </th>
-            <th>Actions</th>
-        </tr>
+            <tr style="background-color: #d4e7ce;">
+                <th>Icon</th>
+                <th>@Html.ActionLink("Category", "Index", new { sortOrder = ViewBag.CategorySortParm })</th>
+                <th>Amount</th>
+                <th>Currency</th>
+                <th>@Html.ActionLink("Type", "Index", new { sortOrder = ViewBag.TypeSortParm })</th>
+                <th>@Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DateSortParm })</th>
+                <th>Actions</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model)
-        {
-            <tr style="background-color: #eff6ed;">
-                <td>@item.Icon</td>
-                <td style="width: 120px;">
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" style="width: 100%;">@item.Category</a>
-                </td>
-                <td>@item.Amount</td>
-                <td>@item.Type</td>
-                <td>@item.Currency</td>
-                <td>@item.Date</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-        }
+            @foreach (var item in Model)
+            {
+                <tr style="background-color: #eff6ed;">
+                    <td>@item.Icon</td>
+                    <td style="width: 120px;">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" style="width: 100%;">@item.Category</a>
+                    </td>
+                    <td class="@(item.Type.ToString() == "Income" ? "income-amount" : (item.Type.ToString() == "Expense" ? "expense-amount" : ""))">
+                        @item.Amount
+                    </td>
+                    <td>@userCurrency</td>
+                    <td>@item.Type</td>
+                    <td>@item.Date</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>

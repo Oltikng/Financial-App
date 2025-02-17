@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Transaction Details";
+    var userCurrency = ViewBag.DefaultCurrency;
 }
 
 <style>
@@ -49,6 +50,14 @@
     .text-muted {
         color: #6c757d !important;
     }
+
+    .income-amount {
+        color: green;
+    }
+
+    .expense-amount {
+        color: red;
+    }
 </style>
 
 <div class="container mt-5">
@@ -67,15 +76,15 @@
             </div>
             <div class="row align-items-center mb-4">
                 <div class="col-4 text-muted text-uppercase fw-bold">Amount</div>
-                <div class="col-8 text-success fs-5">$@Model.Amount</div>
+                <div class="col-8 fs-5
+                    @(Model.Type.ToString() == "Income" ? "income-amount" : (Model.Type.ToString() == "Expense" ? "expense-amount" : ""))">
+                    @Model.Amount <span class="text-dark fs-5">@userCurrency</span>
+                </div>
             </div>
+
             <div class="row align-items-center mb-4">
                 <div class="col-4 text-muted text-uppercase fw-bold">Type</div>
                 <div class="col-8 text-dark fs-5">@Model.Type</div>
-            </div>
-            <div class="row align-items-center mb-4">
-                <div class="col-4 text-muted text-uppercase fw-bold">Currency</div>
-                <div class="col-8 text-dark fs-5">@Model.Currency</div>
             </div>
             <div class="row align-items-center mb-4">
                 <div class="col-4 text-muted text-uppercase fw-bold">Account</div>

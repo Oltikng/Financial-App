@@ -11,11 +11,10 @@ using Microsoft.Extensions.Logging;
 using FinancialApp.Areas.Identity.Data;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;  
+using System.Collections.Generic;
 using PagedList;
 using PagedList.Mvc;
 using X.PagedList;
-
 
 namespace FinancialApp.Controllers
 {
@@ -34,9 +33,12 @@ namespace FinancialApp.Controllers
         }
 
         // GET: Transactions/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var userId = _userManager.GetUserId(User);
+            var userSettings = await _context.Settings.FirstOrDefaultAsync(s => s.UserId == userId);
+            var defaultCurrency = userSettings?.PreferredCurrency ?? CurrencyType.USD;
+
             ViewBag.IconList = new Dictionary<string, string>
             {
                 {"🏠", "Booking 🏠"},
@@ -53,7 +55,9 @@ namespace FinancialApp.Controllers
                 {"🌐", "Online Shopping 🌐"},
                 {"🛒", "Shopping 🛒"}
             };
+
             ViewBag.AccountId = new SelectList(_context.Accounts.Where(a => a.UserId == userId), "Id", "Name");
+            ViewBag.DefaultCurrency = defaultCurrency;
             return View(new InputModel());
         }
 
@@ -65,6 +69,9 @@ namespace FinancialApp.Controllers
             if (ModelState.IsValid)
             {
                 var userId = _userManager.GetUserId(User);
+                var userSettings = await _context.Settings.FirstOrDefaultAsync(s => s.UserId == userId);
+                var defaultCurrency = userSettings?.PreferredCurrency ?? CurrencyType.USD;
+
                 var transaction = new Transaction
                 {
                     Category = inputModel.Category,
@@ -72,7 +79,7 @@ namespace FinancialApp.Controllers
                     Date = DateTime.Now,
                     AccountId = inputModel.AccountId,
                     Type = inputModel.Type,
-                    Currency = inputModel.Currency,
+                    Currency = inputModel.Currency == null ? defaultCurrency : inputModel.Currency,
                     Icon = inputModel.Icon
                 };
 
@@ -99,6 +106,7 @@ namespace FinancialApp.Controllers
                 {"🌐", "Online Shopping 🌐"},
                 {"🛒", "Shopping 🛒"}
             };
+
             ViewData["AccountId"] = new SelectList(_context.Accounts.Where(a => a.UserId == userIdForView), "Id", "Name", inputModel.AccountId);
             return View(inputModel);
         }
@@ -107,6 +115,9 @@ namespace FinancialApp.Controllers
         public async Task<IActionResult> Index(int? accountId, int? month, int? year, int page = 1, int pageSize = 10, string sortOrder = null)
         {
             var userId = _userManager.GetUserId(User);
+            var userSettings = await _context.Settings.FirstOrDefaultAsync(s => s.UserId == userId);
+            var defaultCurrency = userSettings?.PreferredCurrency ?? CurrencyType.USD;
+
             _logger.LogInformation("Fetching transactions for user with Id: {UserId}", userId);
 
             // Set default values for month and year if not provided
@@ -185,6 +196,7 @@ namespace FinancialApp.Controllers
             ViewBag.IncomeData = incomeData;
             ViewBag.ExpenseData = expenseData;
             ViewData["AccountId"] = accountId;
+            ViewBag.UserCurrency = defaultCurrency;
 
             return View(transactions);
         }
@@ -335,7 +347,16 @@ namespace FinancialApp.Controllers
                 return NotFound();
             }
 
+            // Get user settings from your data context or service
             var userId = _userManager.GetUserId(User);
+
+            // Assuming you have a UserSettings model or service
+            var userSettings = await _context.Settings
+                .FirstOrDefaultAsync(us => us.UserId == userId);
+
+            // Set defaultCurrency based on userSettings or fallback to USD
+            var defaultCurrency = userSettings?.PreferredCurrency ?? CurrencyType.USD;
+
             var transaction = await _context.Transactions
                 .Include(t => t.Account)
                 .Where(t => t.Account.UserId == userId && t.Id == id)
@@ -346,8 +367,11 @@ namespace FinancialApp.Controllers
                 return NotFound();
             }
 
+            // Pass the currency setting to the view
+            ViewBag.DefaultCurrency = defaultCurrency;
             return View(transaction);
         }
+
 
         // GET: Transactions/Delete/5
         public async Task<IActionResult> Delete(int? id)

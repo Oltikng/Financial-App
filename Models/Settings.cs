@@ -8,10 +8,9 @@ namespace FinancialApp.Models
 
         [Required]
         [Display(Name = "Preferred Currency")]
-        public CurrencyType PreferredCurrency { get; set; }
-
+        [EnumDataType(typeof(CurrencyType))]
+        public CurrencyType? PreferredCurrency { get; set; }
         public string UserId { get; set; }
-        public string DefaultCurrency { get; set; }
     }
 
     public enum CurrencyType

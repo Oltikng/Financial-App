@@ -4,8 +4,9 @@
     ViewData["Title"] = "Settings";
 }
 
-<h1>Settings</h1>
+<h2>Settings</h2>
 
+<!-- Display success message -->
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">
@@ -13,13 +14,26 @@
     </div>
 }
 
+<!-- Display validation errors -->
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
+<p>
+    <a asp-area="Identity" asp-page="/Account/Manage/Index" class="btn btn-secondary btn-lg">&#8592; Profile Details</a>
+</p>
+
 <form asp-action="SaveSettings" method="post">
-    <label for="defaultCurrency">Default Currency:</label>
-    <select id="defaultCurrency" name="defaultCurrency">
-        <option value="USD">USD</option>
-        <option value="EUR">EUR</option>
-        <option value="GBP">GBP</option>
-        <option value="ALL">ALL</option>
-    </select>
+    <label for="currency">Preferred Currency:</label>
+    <select asp-for="PreferredCurrency" asp-items="Html.GetEnumSelectList<CurrencyType>()"></select>
+
     <button type="submit">Save</button>
 </form>

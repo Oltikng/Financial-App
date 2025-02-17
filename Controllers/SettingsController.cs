@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace FinancialApp.Controllers
 {
@@ -24,12 +25,16 @@ namespace FinancialApp.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
-            var userSettings = await _context.Settings
-                .FirstOrDefaultAsync(s => s.UserId == userId);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var userSettings = await _context.Settings.FirstOrDefaultAsync(s => s.UserId == userId);
 
             if (userSettings == null)
             {
-                // Initialize settings if they do not exist
                 userSettings = new Settings
                 {
                     PreferredCurrency = CurrencyType.USD, // Default currency
@@ -40,36 +45,38 @@ namespace FinancialApp.Controllers
                 await _context.SaveChangesAsync();
             }
 
+            ViewBag.UserCurrency = userSettings.PreferredCurrency;
+
             return View(userSettings);
         }
 
-        // POST: /Settings/Update
+        // POST: /Settings/SaveSettings
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HttpPost]
-        public async Task<IActionResult> SaveSettings(string defaultCurrency)
+        public async Task<IActionResult> SaveSettings(Settings model)
         {
             var userId = _userManager.GetUserId(User);
-            var user = await _userManager.FindByIdAsync(userId);
+            var userSettings = await _context.Settings.FirstOrDefaultAsync(s => s.UserId == userId);
 
-            var settings = await _context.Settings.FirstOrDefaultAsync(s => s.UserId == userId);
-            if (settings == null)
+            if (userId == null)
             {
-               
-                settings = new Settings
-                {
-                    UserId = userId,
-                    DefaultCurrency = defaultCurrency
-                };
-                _context.Settings.Add(settings);
-            }
-            else
-            {
-                // Update existing settings
-                settings.DefaultCurrency = defaultCurrency;
-                _context.Settings.Update(settings);
+                return Unauthorized();
             }
 
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            if (userSettings != null)
+            {
+                userSettings.PreferredCurrency = model.PreferredCurrency;
+                _context.Settings.Update(userSettings);
+                await _context.SaveChangesAsync();
+            }
+
+            _context.Update(user);
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Default currency updated successfully!";

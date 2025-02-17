@@ -31,8 +31,21 @@ namespace FinancialApp.Controllers
             var user = await _userManager.FindByIdAsync(userId);
 
             // Get user settings
-            var settings = await _context.Settings.FirstOrDefaultAsync(s => s.UserId == userId);
-            var defaultCurrency = settings?.DefaultCurrency ?? "EUR";
+            var userSettings = await _context.Settings.FirstOrDefaultAsync(s => s.UserId == userId);
+
+            if (userSettings == null)
+            {
+                userSettings = new Settings
+                {
+                    PreferredCurrency = CurrencyType.USD,
+                    UserId = userId
+                };
+
+                _context.Settings.Add(userSettings);
+                await _context.SaveChangesAsync();
+            }
+
+            ViewBag.UserCurrency = userSettings.PreferredCurrency;
 
             // Retrieve all accounts for the current user
             var accounts = await _context.Accounts
