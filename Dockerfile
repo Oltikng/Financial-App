@@ -14,7 +14,7 @@ COPY ["FinancialApp/FinancialApp.csproj", "FinancialApp/"]
 RUN dotnet restore "FinancialApp/FinancialApp.csproj"
 
 # Copy the rest of the application and publish it
-COPY . .
+COPY ./FinancialApp ./FinancialApp
 WORKDIR "/src/FinancialApp"
 RUN dotnet publish "FinancialApp.csproj" -c Release -o /app/publish
 
